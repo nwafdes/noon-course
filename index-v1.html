@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CyberSim: تحدي ريان</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #1a1a1a; touch-action: manipulation; }
+        ::-webkit-scrollbar { display: none; }
+        .app-view { display: none; height: 100vh; padding-bottom: 80px; overflow-y: auto; }
+        .active-view { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .insta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .insta-item { aspect-ratio: 1/1; overflow: hidden; position: relative; cursor: pointer; }
+        .insta-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        .insta-item:active img { transform: scale(0.95); opacity: 0.8; }
+    </style>
+</head>
+<body class="text-white select-none">
+
+    <div id="mission-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div class="bg-gray-800 p-6 rounded-2xl w-11/12 max-w-md text-center border-2 border-green-500 shadow-2xl">
+            <h1 class="text-3xl font-bold text-green-400 mb-4">🕵️‍♂️ مهمة: سقوط المؤثر</h1>
+            <p class="text-gray-300 mb-6 text-lg leading-relaxed">
+                الهدف: <b>ريان (RyanGamer99)</b>.<br>
+                يدعي أن حساباته لا تُخترق.<br><br>
+                <b>المطلوب منك:</b><br>
+                1. حلل صوره واكتشف معلوماته.<br>
+                2. اصنع قائمة كلمات مرور.<br>
+                3. اخترق حسابه وأغلق الثغرة.
+            </p>
+            <button onclick="closeModal('mission-modal')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xl shadow-lg transform transition active:scale-95">
+                🚀 ابدأ المهمة
+            </button>
+        </div>
+    </div>
+
+    <div id="post-viewer" class="fixed inset-0 z-40 hidden flex items-center justify-center bg-black/95 backdrop-blur-md p-4" onclick="closeModal('post-viewer')">
+        <div class="bg-white rounded-lg overflow-hidden w-full max-w-sm shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex items-center p-3 border-b border-gray-200 bg-white">
+                <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden mr-2 border border-gray-200">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan" alt="User">
+                </div>
+                <span class="text-black font-bold text-sm">RyanGamer99</span>
+            </div>
+            <div class="bg-black flex items-center justify-center">
+                <img id="viewer-img" src="" class="max-h-[60vh] w-full object-contain">
+            </div>
+            <div class="p-3 bg-white text-black">
+                <div class="flex gap-4 text-2xl mb-2">
+                    <button class="text-red-500">❤️</button>
+                    <button class="text-gray-600">💬</button>
+                    <button class="text-gray-600">✈️</button>
+                </div>
+                <p class="text-sm font-bold mb-1">2,450 likes</p>
+                <p class="text-sm leading-tight">
+                    <span class="font-bold mr-1">RyanGamer99</span>
+                    <span id="viewer-caption">Caption text here...</span>
+                </p>
+                <p class="text-xs text-gray-400 mt-2 uppercase">2 days ago</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-home" class="app-view active-view bg-gray-900">
+        <header class="p-6 pt-12 bg-gradient-to-b from-gray-800 to-gray-900 rounded-b-3xl shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-100">مرحباً أيها العميل 👋</h2>
+            <p class="text-gray-400 mt-2 text-sm">لديك 4 أدلة لجمعها من حساب الهدف.</p>
+        </header>
+        <div class="p-6 grid grid-cols-2 gap-4">
+            <div onclick="nav('gram')" class="bg-gray-800 p-4 rounded-xl text-center border border-gray-700 active:bg-gray-700 transition cursor-pointer">
+                <span class="text-4xl">📸</span>
+                <p class="mt-2 text-sm font-bold text-white">الاستطلاع</p>
+                <p class="text-xs text-gray-400">ابدأ من هنا</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center border border-gray-700 opacity-50">
+                <span class="text-4xl">🔓</span>
+                <p class="mt-2 text-sm font-bold text-white">حالة الهدف</p>
+                <p class="text-xs text-red-400">غير مخترق</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-gram" class="app-view bg-white text-black">
+        <header class="p-4 border-b flex items-center bg-white sticky top-0 z-10 shadow-sm">
+            <div class="w-16 h-16 bg-gradient-to-tr from-yellow-400 to-purple-600 p-1 rounded-full mr-3">
+                <div class="w-full h-full bg-white rounded-full p-1">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan" class="w-full h-full rounded-full" alt="Ryan">
+                </div>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg leading-none">RyanGamer99</h3>
+                <p class="text-xs text-gray-500 mt-1">Gamer 🎮 | Riyadh 🇸🇦</p>
+                <p class="text-xs text-blue-900 mt-1">"باسووردي قوي جداً 💪"</p>
+            </div>
+        </header>
+        
+        <div class="insta-grid">
+            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/cake.png', 'أحلى يوم ميلاد! كبرنا سنة وصار عمري 15 😎🎂 #Birthday')">
+                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/cake.png" alt="Cake">
+            </div>
+            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/cat.png', 'صباح الخير من قطتي Luna 🐱❤️ الحب كله!')">
+                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/cat.png" alt="Cat">
+            </div>
+            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/card.png', 'وأخيراً طلعت بطاقتي من DigiBank 💳! الحين أقدر أشتري سكنات براحتي (غطيت الأرقام عشان الحسد 😂)')">
+                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/card.png" alt="Bank Card">
+            </div>
+            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/skin.png', 'شريته بخصم رهيب من موقع SkinStore 🔥 العرض لا يفوتكم!')">
+                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/skin.png" alt="Game Skin">
+            </div>
+        </div>
+    </div> <div id="view-tools" class="app-view bg-black text-green-500 font-mono">
+        <header class="p-4 border-b border-green-800 bg-black sticky top-0 z-10">
+            <h2 class="text-xl font-bold tracking-wider">🛠️ HackerOps v2.0</h2>
+        </header>
+        
+        <div class="flex border-b border-green-800">
+            <button onclick="switchTool('gen')" class="flex-1 p-3 hover:bg-green-900 transition text-sm font-bold">1. Wordlist</button>
+            <button onclick="switchTool('attack')" class="flex-1 p-3 hover:bg-green-900 transition border-r border-green-800 text-sm font-bold">2. Attack</button>
+        </div>
+
+        <div id="tool-gen" class="p-4">
+            <p class="text-gray-500 text-xs mb-4">أدخل البيانات التي جمعتها من GramZone:</p>
+            <label class="block mb-1 text-xs text-green-700">TARGET NAME</label>
+            <input type="text" placeholder="الاسم" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white focus:outline-none focus:border-green-400">
+            <label class="block mb-1 text-xs text-green-700">BIRTH YEAR (Est.)</label>
+            <input type="number" placeholder="سنة الميلاد" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white">
+            <label class="block mb-1 text-xs text-green-700">PET NAME</label>
+            <input type="text" placeholder="اسم الحيوان الأليف" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white">
+            <button onclick="generateWordlist()" class="w-full bg-green-700 hover:bg-green-600 text-black font-bold p-3 rounded mt-2 uppercase tracking-wide">
+                🤖 Generate Wordlist
+            </button>
+            <div id="wordlist-output" class="hidden mt-4 p-3 bg-gray-900 border border-green-500 rounded text-xs h-32 overflow-y-auto font-mono"></div>
+        </div>
+
+        <div id="tool-attack" class="hidden p-4">
+            <label class="block mb-2 text-xs text-green-700">SELECT TARGET SYSTEM:</label>
+            <select id="target-select" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-4 text-white">
+                <option value="bank">🏦 DigiBank (Financial)</option>
+                <option value="store">🎮 SkinStore (Gaming)</option>
+            </select>
+            <div class="w-full bg-gray-800 p-3 rounded mb-4 flex items-center justify-between">
+                <span class="text-gray-400 text-xs">Payload:</span>
+                <span class="text-green-400 text-xs font-bold">wordlist.txt (AI Generated)</span>
+            </div>
+            <button onclick="startBruteForce()" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold p-3 rounded animate-pulse border-2 border-red-500">
+                🚀 LAUNCH ATTACK
+            </button>
+            <div id="console-log" class="mt-4 p-3 bg-black border border-gray-700 rounded h-40 overflow-y-auto text-xs hidden leading-relaxed"></div>
+        </div>
+    </div>
+
+    <div id="view-store" class="app-view bg-indigo-900 text-white">
+        <div id="store-login" class="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-indigo-900 to-purple-900">
+            <h1 class="text-5xl font-black italic mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">SkinStore</h1>
+            <p class="text-indigo-200 mb-10 text-lg">Level Up Your Game 🚀</p>
+            <div class="bg-indigo-950/50 p-6 rounded-2xl w-full text-center border border-indigo-700 backdrop-blur">
+                <span class="text-4xl block mb-2">🔒</span>
+                <p class="font-bold">Access Denied</p>
+                <p class="text-xs text-indigo-300 mt-2">Login required to view inventory.</p>
+            </div>
+        </div>
+
+        <div id="store-dashboard" class="hidden">
+            <header class="p-4 bg-indigo-950 flex justify-between items-center shadow-lg border-b border-indigo-800">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">💎</span>
+                    <span class="font-bold text-yellow-400 text-xl">5,000</span>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-sm">RyanGamer99</p>
+                    <p class="text-xs text-indigo-400">Standard Member</p>
+                </div>
+            </header>
+            
+            <div class="p-4">
+                <div class="bg-red-500/10 border border-red-500 p-4 rounded-xl mb-6 flex items-start">
+                    <span class="text-2xl mr-3">⚠️</span>
+                    <div>
+                        <h3 class="font-bold text-red-200 text-sm">حسابك معرض للخطر!</h3>
+                        <p class="text-xs text-red-100 mb-3 opacity-80">التحقق الثنائي غير مفعل.</p>
+                        <button onclick="showSettings()" class="bg-red-600 px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-red-500 transition">
+                            🛠️ أصلح المشكلة الآن
+                        </button>
+                    </div>
+                </div>
+                
+                <h3 class="font-bold mb-3 text-indigo-200">الأشياء التي يملكها (Inventory):</h3>
+                <div class="bg-indigo-800/50 p-3 rounded-xl mb-2 flex items-center border border-indigo-700">
+                    <img src="https://noon-lab-bucket.s3.amazonaws.com/img/ch.png" class="w-12 h-12 rounded-lg mr-3 object-cover border border-indigo-500">
+                    <div>
+                        <p class="font-bold text-sm">Neon Samurai Skin</p>
+                        <p class="text-[10px] text-indigo-300">Purchased via: VISA **** 1234</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-settings" class="hidden fixed inset-0 z-50 bg-gray-900 overflow-y-auto">
+            <header class="p-4 flex justify-between items-center bg-gray-800">
+                <h2 class="text-xl font-bold text-white">⚙️ إعدادات الحماية</h2>
+                <button onclick="hideSettings()" class="text-gray-400 bg-gray-700 px-3 py-1 rounded hover:text-white">إغلاق</button>
+            </header>
+
+            <div class="p-6">
+                <div class="bg-gray-800 p-5 rounded-2xl mb-6 border border-gray-700">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center">
+                        <span class="bg-blue-900/50 p-1 rounded mr-2">1</span> كلمة المرور
+                    </h3>
+                    <input type="text" id="new-pass" placeholder="اكتب جملة مرور جديدة..." class="w-full bg-gray-900 p-4 rounded-xl text-white mb-2 border border-gray-600 focus:border-blue-500 outline-none">
+                    <p class="text-xs text-gray-500">نصيحة: استخدم جملة كاملة (Passphrase) مثل "My_Cat_Loves_Tuna".</p>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-2xl mb-8 border border-gray-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-purple-400 flex items-center">
+                            <span class="bg-purple-900/50 p-1 rounded mr-2">2</span> التحقق الثنائي (2FA)
+                        </h3>
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-900 p-3 rounded-xl">
+                        <p class="text-xs text-gray-400" id="2fa-status-text">الحالة: معطل ❌</p>
+                        <button id="btn-2fa" onclick="toggle2FA()" class="w-14 h-8 bg-gray-600 rounded-full relative transition duration-300">
+                            <div id="toggle-circle" class="w-6 h-6 bg-white rounded-full absolute top-1 left-1 transition duration-300 transform shadow-md"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="saveDefenses()" class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white py-4 rounded-xl font-bold text-lg shadow-lg transform active:scale-95 transition">
+                    💾 حفظ وتأمين الحساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 pb-8 pt-2 px-6 flex justify-between z-50">
+        <button onclick="nav('home')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
+            <span class="text-2xl mb-1">🏠</span>
+            <span class="text-[10px]">الرئيسية</span>
+        </button>
+        <button onclick="nav('gram')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
+            <span class="text-2xl mb-1">📸</span>
+            <span class="text-[10px]">GramZone</span>
+        </button>
+        <button onclick="nav('tools')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
+            <span class="text-2xl mb-1">🛠️</span>
+            <span class="text-[10px]">HackerOps</span>
+        </button>
+        <button onclick="nav('store')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
+            <span class="text-2xl mb-1">🎮</span>
+            <span class="text-[10px]">Store</span>
+        </button>
+    </nav>
+
+    <script>
+        // --- State Management ---
+        let gameState = JSON.parse(localStorage.getItem('cybersim_ryan_v2')) || {
+            password: "Luna2010",
+            is2FA: false,
+            hackedStore: false
+        };
+
+        function saveState() {
+            localStorage.setItem('cybersim_ryan_v2', JSON.stringify(gameState));
+        }
+
+        // --- Navigation ---
+        function nav(viewId) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active-view'));
+            const target = document.getElementById(`view-${viewId}`);
+            if(target) target.classList.add('active-view');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-white'));
+            
+            if (viewId === 'store') {
+                if (gameState.hackedStore) {
+                    document.getElementById('store-login').classList.add('hidden');
+                    document.getElementById('store-dashboard').classList.remove('hidden');
+                } else {
+                    document.getElementById('store-login').classList.remove('hidden');
+                    document.getElementById('store-dashboard').classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Modals Logic ---
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function openPost(imgSrc, caption) {
+            document.getElementById('viewer-img').src = imgSrc;
+            document.getElementById('viewer-caption').innerText = caption;
+            document.getElementById('post-viewer').style.display = 'flex';
+        }
+
+        // --- HackerOps Logic ---
+        function switchTool(tool) {
+            document.getElementById('tool-gen').classList.add('hidden');
+            document.getElementById('tool-attack').classList.add('hidden');
+            document.getElementById(`tool-${tool}`).classList.remove('hidden');
+        }
+
+        function generateWordlist() {
+            const output = document.getElementById('wordlist-output');
+            output.classList.remove('hidden');
+            output.innerHTML = "<span class='text-green-400 animate-pulse'>[+] Connecting to AI Engine...</span>";
+            
+            setTimeout(() => {
+                output.innerHTML = `
+                    <span class='text-gray-400'># Generated Payload:</span><br>
+                    Ryan_2010<br>
+                    Luna_Love<br>
+                    RyanGamer123<br>
+                    Hilal_Ryan<br>
+                    <span class='text-green-300 font-bold'>Luna2010</span><br>
+                    Ryan_King<br>
+                    ILoveLuna
+                `;
+            }, 1500);
+        }
+
+        function startBruteForce() {
+            const target = document.getElementById('target-select').value;
+            const consoleLog = document.getElementById('console-log');
+            consoleLog.classList.remove('hidden');
+            consoleLog.innerHTML = `<span class='text-blue-400'>[*] Initializing Attack on ${target.toUpperCase()}...</span><br>`;
+            
+            let attempts = ["Ryan123", "Luna_Love", "Hilal2024", gameState.password]; 
+            let i = 0;
+
+            const interval = setInterval(() => {
+                if (i >= attempts.length) { clearInterval(interval); return; }
+                let pass = attempts[i];
+                let isMatch = (pass === gameState.password);
+
+                if (!isMatch) {
+                    consoleLog.innerHTML += `<span class='text-red-500'>[x] Trying: ${pass} ... FAILED</span><br>`;
+                    consoleLog.scrollTop = consoleLog.scrollHeight;
+                } else {
+                    clearInterval(interval);
+                    consoleLog.innerHTML += `<span class='text-green-400 font-bold'>[v] Trying: ${pass} ... MATCH FOUND!</span><br>`;
+                    
+                    setTimeout(() => {
+                        if (target === 'bank') {
+                            consoleLog.innerHTML += `<span class='text-yellow-400'>[*] Sending Login Request...</span><br>`;
+                            setTimeout(() => {
+                                consoleLog.innerHTML += `<span class='text-red-500 bg-red-900/50 p-2 block mt-2 border border-red-500 rounded'>⛔ ACCESS DENIED: 2FA REQUIRED.</span>`;
+                                consoleLog.scrollTop = consoleLog.scrollHeight;
+                                alert("🛑 البنك محمي!\nكلمة المرور صحيحة، لكن الحماية الثنائية منعتك.\nجرب المتجر!");
+                            }, 800);
+                        } else {
+                            consoleLog.innerHTML += `<span class='text-yellow-400'>[*] Sending Login Request...</span><br>`;
+                            setTimeout(() => {
+                                if (gameState.is2FA) {
+                                    consoleLog.innerHTML += `<span class='text-blue-400 bg-blue-900/50 p-2 block mt-2 border border-blue-500 rounded'>🛡️ ATTACK BLOCKED BY 2FA.</span>`;
+                                    alert("🎉 كفو!\nالدفاع نجح. لقد أمنت الحساب.");
+                                } else {
+                                    consoleLog.innerHTML += `<span class='text-green-400 bg-green-900/50 p-2 block mt-2 border border-green-500 rounded'>🔓 ACCESS GRANTED!</span>`;
+                                    gameState.hackedStore = true;
+                                    saveState();
+                                    setTimeout(() => {
+                                        nav('store');
+                                        alert("🔓 تم الاختراق!\nأنت الآن داخل المتجر.\nأسرع للإعدادات وأغلق الثغرة!");
+                                    }, 1000);
+                                }
+                                consoleLog.scrollTop = consoleLog.scrollHeight;
+                            }, 800);
+                        }
+                    }, 500);
+                }
+                i++;
+            }, 600);
+        }
+
+        // --- Settings Logic ---
+        function showSettings() { document.getElementById('store-settings').classList.remove('hidden'); }
+        function hideSettings() { document.getElementById('store-settings').classList.add('hidden'); }
+        
+        function toggle2FA() {
+            const btn = document.getElementById('toggle-circle');
+            const txt = document.getElementById('2fa-status-text');
+            if (btn.classList.contains('translate-x-6')) {
+                btn.classList.remove('translate-x-6');
+                btn.parentElement.classList.remove('bg-green-500');
+                btn.parentElement.classList.add('bg-gray-600');
+                txt.innerText = "الحالة: معطل ❌";
+                txt.dataset.status = "false";
+            } else {
+                btn.classList.add('translate-x-6');
+                btn.parentElement.classList.remove('bg-gray-600');
+                btn.parentElement.classList.add('bg-green-500');
+                txt.innerText = "الحالة: مفعل ✅";
+                txt.dataset.status = "true";
+            }
+        }
+
+        function saveDefenses() {
+            const newPass = document.getElementById('new-pass').value;
+            const is2FAActive = document.getElementById('2fa-status-text').dataset.status === "true";
+
+            if (newPass.length < 8) {
+                alert("⚠️ كلمة المرور قصيرة! اختر جملة أطول.");
+                return;
+            }
+
+            if (!is2FAActive) {
+                alert("⚠️ لم تفعل 2FA بعد! الحساب لا يزال في خطر.");
+                return;
+            }
+
+            gameState.password = newPass;
+            gameState.is2FA = true;
+            gameState.hackedStore = false;
+            saveState();
+
+            hideSettings();
+            nav('tools');
+            alert("✅ تم الحفظ!\nعد الآن إلى HackerOps وحاول اختراق المتجر للتأكد.");
+        }
+    </script>
+</body>
+</html>
