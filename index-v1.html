@@ -1,277 +1,350 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberSim: تحدي ريان</title>
+    <title>RED TEAM: Operation Jonathan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #1a1a1a; touch-action: manipulation; }
-        ::-webkit-scrollbar { display: none; }
+        /* Terminal Aesthetics */
+        body { font-family: 'Fira Code', monospace; background-color: #0d1117; color: #c9d1d9; }
+        .cairo { font-family: 'Cairo', sans-serif; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #3fb950; }
+        
         .app-view { display: none; height: 100vh; padding-bottom: 80px; overflow-y: auto; }
-        .active-view { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .insta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-        .insta-item { aspect-ratio: 1/1; overflow: hidden; position: relative; cursor: pointer; }
-        .insta-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .insta-item:active img { transform: scale(0.95); opacity: 0.8; }
+        .active-view { display: block; }
+        
+        /* Grid for Recon */
+        .intel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .intel-item { border: 1px solid #30363d; border-radius: 6px; overflow: hidden; position: relative; cursor: crosshair; }
+        .intel-item img { width: 100%; height: 150px; object-fit: cover; opacity: 0.7; transition: 0.3s; }
+        .intel-item:hover img { opacity: 1; transform: scale(1.05); }
+        .intel-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 5px; font-size: 10px; color: #3fb950; }
+        
+        /* Animation */
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="text-white select-none">
+<body class="select-none">
 
-    <div id="mission-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
-        <div class="bg-gray-800 p-6 rounded-2xl w-11/12 max-w-md text-center border-2 border-green-500 shadow-2xl">
-            <h1 class="text-3xl font-bold text-green-400 mb-4">🕵️‍♂️ مهمة: سقوط المؤثر</h1>
-            <p class="text-gray-300 mb-6 text-lg leading-relaxed">
-                الهدف: <b>ريان (RyanGamer99)</b>.<br>
-                يدعي أن حساباته لا تُخترق.<br><br>
-                <b>المطلوب منك:</b><br>
-                1. حلل صوره واكتشف معلوماته.<br>
-                2. اصنع قائمة كلمات مرور.<br>
-                3. اخترق حسابه وأغلق الثغرة.
-            </p>
-            <button onclick="closeModal('mission-modal')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xl shadow-lg transform transition active:scale-95">
-                🚀 ابدأ المهمة
-            </button>
-        </div>
-    </div>
-
-    <div id="post-viewer" class="fixed inset-0 z-40 hidden flex items-center justify-center bg-black/95 backdrop-blur-md p-4" onclick="closeModal('post-viewer')">
-        <div class="bg-white rounded-lg overflow-hidden w-full max-w-sm shadow-2xl" onclick="event.stopPropagation()">
-            <div class="flex items-center p-3 border-b border-gray-200 bg-white">
-                <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden mr-2 border border-gray-200">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan" alt="User">
+    <div id="mission-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4">
+        <div class="bg-[#161b22] w-full max-w-lg border border-[#3fb950] rounded-md shadow-[0_0_20px_rgba(63,185,80,0.2)]">
+            <div class="bg-[#0d1117] p-2 border-b border-[#30363d] flex justify-between items-center">
+                <span class="text-xs text-gray-500">root@kali:~/missions/jonathan</span>
+                <div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-yellow-500"></div><div class="w-3 h-3 rounded-full bg-green-500"></div></div>
+            </div>
+            <div class="p-6 font-mono text-sm">
+                <p class="text-[#3fb950] mb-2">$ ./briefing.sh --target=Jonathan_CFO</p>
+                <div class="mb-4 text-gray-300 leading-relaxed dir-rtl cairo text-right border-r-2 border-gray-700 pr-3">
+                    <span class="text-red-400 font-bold">[سري للغاية]</span><br>
+                    المهمة: اختبار اختراق المدير المالي <b>Jonathan</b>.<br>
+                    الهدف يستخدم كلمات مرور ضعيفة.<br><br>
+                    <b>التحدي:</b> يجب عليك جمع المعلومات بدقة (الاسم، الحيوان الأليف، السنة). إذا أدخلت معلومات خاطئة، ستفشل قائمة التخمين.<br><br>
+                    <b>المراحل:</b><br>
+                    1. <span class="text-[#3fb950]">RECON:</span> جمع المعلومات بدقة.<br>
+                    2. <span class="text-[#3fb950]">WEAPONIZE:</span> توليد Wordlist (تتطلب دقة).<br>
+                    3. <span class="text-[#3fb950]">EXPLOIT:</span> الاختراق ثم الدفاع.
                 </div>
-                <span class="text-black font-bold text-sm">RyanGamer99</span>
-            </div>
-            <div class="bg-black flex items-center justify-center">
-                <img id="viewer-img" src="" class="max-h-[60vh] w-full object-contain">
-            </div>
-            <div class="p-3 bg-white text-black">
-                <div class="flex gap-4 text-2xl mb-2">
-                    <button class="text-red-500">❤️</button>
-                    <button class="text-gray-600">💬</button>
-                    <button class="text-gray-600">✈️</button>
-                </div>
-                <p class="text-sm font-bold mb-1">2,450 likes</p>
-                <p class="text-sm leading-tight">
-                    <span class="font-bold mr-1">RyanGamer99</span>
-                    <span id="viewer-caption">Caption text here...</span>
-                </p>
-                <p class="text-xs text-gray-400 mt-2 uppercase">2 days ago</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-home" class="app-view active-view bg-gray-900">
-        <header class="p-6 pt-12 bg-gradient-to-b from-gray-800 to-gray-900 rounded-b-3xl shadow-lg">
-            <h2 class="text-2xl font-bold text-gray-100">مرحباً أيها العميل 👋</h2>
-            <p class="text-gray-400 mt-2 text-sm">لديك 4 أدلة لجمعها من حساب الهدف.</p>
-        </header>
-        <div class="p-6 grid grid-cols-2 gap-4">
-            <div onclick="nav('gram')" class="bg-gray-800 p-4 rounded-xl text-center border border-gray-700 active:bg-gray-700 transition cursor-pointer">
-                <span class="text-4xl">📸</span>
-                <p class="mt-2 text-sm font-bold text-white">الاستطلاع</p>
-                <p class="text-xs text-gray-400">ابدأ من هنا</p>
-            </div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center border border-gray-700 opacity-50">
-                <span class="text-4xl">🔓</span>
-                <p class="mt-2 text-sm font-bold text-white">حالة الهدف</p>
-                <p class="text-xs text-red-400">غير مخترق</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-gram" class="app-view bg-white text-black">
-        <header class="p-4 border-b flex items-center bg-white sticky top-0 z-10 shadow-sm">
-            <div class="w-16 h-16 bg-gradient-to-tr from-yellow-400 to-purple-600 p-1 rounded-full mr-3">
-                <div class="w-full h-full bg-white rounded-full p-1">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ryan" class="w-full h-full rounded-full" alt="Ryan">
-                </div>
-            </div>
-            <div>
-                <h3 class="font-bold text-lg leading-none">RyanGamer99</h3>
-                <p class="text-xs text-gray-500 mt-1">Gamer 🎮 | Riyadh 🇸🇦</p>
-                <p class="text-xs text-blue-900 mt-1">"باسووردي قوي جداً 💪"</p>
-            </div>
-        </header>
-        
-        <div class="insta-grid">
-            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/cake.png', 'أحلى يوم ميلاد! كبرنا سنة وصار عمري 15 😎🎂 #Birthday')">
-                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/cake.png" alt="Cake">
-            </div>
-            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/cat.png', 'صباح الخير من قطتي Luna 🐱❤️ الحب كله!')">
-                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/cat.png" alt="Cat">
-            </div>
-            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/card.png', 'وأخيراً طلعت بطاقتي من DigiBank 💳! الحين أقدر أشتري سكنات براحتي (غطيت الأرقام عشان الحسد 😂)')">
-                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/card.png" alt="Bank Card">
-            </div>
-            <div class="insta-item" onclick="openPost('https://noon-lab-bucket.s3.amazonaws.com/img/skin.png', 'شريته بخصم رهيب من موقع SkinStore 🔥 العرض لا يفوتكم!')">
-                <img src="https://noon-lab-bucket.s3.amazonaws.com/img/skin.png" alt="Game Skin">
-            </div>
-        </div>
-    </div> <div id="view-tools" class="app-view bg-black text-green-500 font-mono">
-        <header class="p-4 border-b border-green-800 bg-black sticky top-0 z-10">
-            <h2 class="text-xl font-bold tracking-wider">🛠️ HackerOps v2.0</h2>
-        </header>
-        
-        <div class="flex border-b border-green-800">
-            <button onclick="switchTool('gen')" class="flex-1 p-3 hover:bg-green-900 transition text-sm font-bold">1. Wordlist</button>
-            <button onclick="switchTool('attack')" class="flex-1 p-3 hover:bg-green-900 transition border-r border-green-800 text-sm font-bold">2. Attack</button>
-        </div>
-
-        <div id="tool-gen" class="p-4">
-            <p class="text-gray-500 text-xs mb-4">أدخل البيانات التي جمعتها من GramZone:</p>
-            <label class="block mb-1 text-xs text-green-700">TARGET NAME</label>
-            <input type="text" placeholder="الاسم" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white focus:outline-none focus:border-green-400">
-            <label class="block mb-1 text-xs text-green-700">BIRTH YEAR (Est.)</label>
-            <input type="number" placeholder="سنة الميلاد" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white">
-            <label class="block mb-1 text-xs text-green-700">PET NAME</label>
-            <input type="text" placeholder="اسم الحيوان الأليف" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-3 text-white">
-            <button onclick="generateWordlist()" class="w-full bg-green-700 hover:bg-green-600 text-black font-bold p-3 rounded mt-2 uppercase tracking-wide">
-                🤖 Generate Wordlist
-            </button>
-            <div id="wordlist-output" class="hidden mt-4 p-3 bg-gray-900 border border-green-500 rounded text-xs h-32 overflow-y-auto font-mono"></div>
-        </div>
-
-        <div id="tool-attack" class="hidden p-4">
-            <label class="block mb-2 text-xs text-green-700">SELECT TARGET SYSTEM:</label>
-            <select id="target-select" class="w-full bg-gray-900 border border-green-700 p-3 rounded mb-4 text-white">
-                <option value="bank">🏦 DigiBank (Financial)</option>
-                <option value="store">🎮 SkinStore (Gaming)</option>
-            </select>
-            <div class="w-full bg-gray-800 p-3 rounded mb-4 flex items-center justify-between">
-                <span class="text-gray-400 text-xs">Payload:</span>
-                <span class="text-green-400 text-xs font-bold">wordlist.txt (AI Generated)</span>
-            </div>
-            <button onclick="startBruteForce()" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold p-3 rounded animate-pulse border-2 border-red-500">
-                🚀 LAUNCH ATTACK
-            </button>
-            <div id="console-log" class="mt-4 p-3 bg-black border border-gray-700 rounded h-40 overflow-y-auto text-xs hidden leading-relaxed"></div>
-        </div>
-    </div>
-
-    <div id="view-store" class="app-view bg-indigo-900 text-white">
-        <div id="store-login" class="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-indigo-900 to-purple-900">
-            <h1 class="text-5xl font-black italic mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">SkinStore</h1>
-            <p class="text-indigo-200 mb-10 text-lg">Level Up Your Game 🚀</p>
-            <div class="bg-indigo-950/50 p-6 rounded-2xl w-full text-center border border-indigo-700 backdrop-blur">
-                <span class="text-4xl block mb-2">🔒</span>
-                <p class="font-bold">Access Denied</p>
-                <p class="text-xs text-indigo-300 mt-2">Login required to view inventory.</p>
-            </div>
-        </div>
-
-        <div id="store-dashboard" class="hidden">
-            <header class="p-4 bg-indigo-950 flex justify-between items-center shadow-lg border-b border-indigo-800">
-                <div class="flex items-center">
-                    <span class="text-2xl mr-2">💎</span>
-                    <span class="font-bold text-yellow-400 text-xl">5,000</span>
-                </div>
-                <div class="text-right">
-                    <p class="font-bold text-sm">RyanGamer99</p>
-                    <p class="text-xs text-indigo-400">Standard Member</p>
-                </div>
-            </header>
-            
-            <div class="p-4">
-                <div class="bg-red-500/10 border border-red-500 p-4 rounded-xl mb-6 flex items-start">
-                    <span class="text-2xl mr-3">⚠️</span>
-                    <div>
-                        <h3 class="font-bold text-red-200 text-sm">حسابك معرض للخطر!</h3>
-                        <p class="text-xs text-red-100 mb-3 opacity-80">التحقق الثنائي غير مفعل.</p>
-                        <button onclick="showSettings()" class="bg-red-600 px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-red-500 transition">
-                            🛠️ أصلح المشكلة الآن
-                        </button>
-                    </div>
-                </div>
-                
-                <h3 class="font-bold mb-3 text-indigo-200">الأشياء التي يملكها (Inventory):</h3>
-                <div class="bg-indigo-800/50 p-3 rounded-xl mb-2 flex items-center border border-indigo-700">
-                    <img src="https://noon-lab-bucket.s3.amazonaws.com/img/ch.png" class="w-12 h-12 rounded-lg mr-3 object-cover border border-indigo-500">
-                    <div>
-                        <p class="font-bold text-sm">Neon Samurai Skin</p>
-                        <p class="text-[10px] text-indigo-300">Purchased via: VISA **** 1234</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="store-settings" class="hidden fixed inset-0 z-50 bg-gray-900 overflow-y-auto">
-            <header class="p-4 flex justify-between items-center bg-gray-800">
-                <h2 class="text-xl font-bold text-white">⚙️ إعدادات الحماية</h2>
-                <button onclick="hideSettings()" class="text-gray-400 bg-gray-700 px-3 py-1 rounded hover:text-white">إغلاق</button>
-            </header>
-
-            <div class="p-6">
-                <div class="bg-gray-800 p-5 rounded-2xl mb-6 border border-gray-700">
-                    <h3 class="text-lg font-bold text-blue-400 mb-3 flex items-center">
-                        <span class="bg-blue-900/50 p-1 rounded mr-2">1</span> كلمة المرور
-                    </h3>
-                    <input type="text" id="new-pass" placeholder="اكتب جملة مرور جديدة..." class="w-full bg-gray-900 p-4 rounded-xl text-white mb-2 border border-gray-600 focus:border-blue-500 outline-none">
-                    <p class="text-xs text-gray-500">نصيحة: استخدم جملة كاملة (Passphrase) مثل "My_Cat_Loves_Tuna".</p>
-                </div>
-
-                <div class="bg-gray-800 p-5 rounded-2xl mb-8 border border-gray-700">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-purple-400 flex items-center">
-                            <span class="bg-purple-900/50 p-1 rounded mr-2">2</span> التحقق الثنائي (2FA)
-                        </h3>
-                    </div>
-                    <div class="flex items-center justify-between bg-gray-900 p-3 rounded-xl">
-                        <p class="text-xs text-gray-400" id="2fa-status-text">الحالة: معطل ❌</p>
-                        <button id="btn-2fa" onclick="toggle2FA()" class="w-14 h-8 bg-gray-600 rounded-full relative transition duration-300">
-                            <div id="toggle-circle" class="w-6 h-6 bg-white rounded-full absolute top-1 left-1 transition duration-300 transform shadow-md"></div>
-                        </button>
-                    </div>
-                </div>
-
-                <button onclick="saveDefenses()" class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white py-4 rounded-xl font-bold text-lg shadow-lg transform active:scale-95 transition">
-                    💾 حفظ وتأمين الحساب
+                <button onclick="closeModal('mission-modal')" class="w-full bg-[#238636] hover:bg-[#2ea043] text-white py-3 rounded border border-[rgba(255,255,255,0.1)] transition font-bold mt-4">
+                    [ ACCEPT MISSION ]
                 </button>
             </div>
         </div>
     </div>
 
-    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 pb-8 pt-2 px-6 flex justify-between z-50">
-        <button onclick="nav('home')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
-            <span class="text-2xl mb-1">🏠</span>
-            <span class="text-[10px]">الرئيسية</span>
+    <div id="post-viewer" class="fixed inset-0 z-[50] hidden flex items-center justify-center bg-black/98 p-4" onclick="closeModal('post-viewer')">
+        <div class="w-full max-w-md border border-gray-700 bg-[#0d1117]" onclick="event.stopPropagation()">
+            <div class="p-2 border-b border-gray-700 flex justify-between">
+                <span class="text-xs text-blue-400">EVIDENCE_VIEWER_V1.0</span>
+                <button onclick="closeModal('post-viewer')" class="text-red-500 font-bold">X</button>
+            </div>
+            <img id="viewer-img" src="" class="w-full max-h-[50vh] object-contain border-b border-gray-800">
+            <div class="p-4">
+                <p class="text-xs text-gray-500 mb-1">METADATA: <span class="text-green-500">EXTRACTED</span></p>
+                <p id="viewer-caption" class="text-sm text-gray-300 font-mono"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-home" class="app-view active-view bg-[#0d1117]">
+        <div class="p-6 pt-10">
+            <h1 class="text-2xl font-bold text-gray-100 mb-1">RED TEAM <span class="text-[#3fb950]">DASHBOARD</span></h1>
+            <p class="text-xs text-gray-500 font-mono mb-8">SESSION ID: <span class="blink">0x9B2F...</span></p>
+
+            <div class="grid grid-cols-1 gap-4">
+                <div onclick="nav('gram')" class="bg-[#161b22] p-4 rounded border border-[#30363d] flex items-center gap-4 cursor-pointer hover:border-[#3fb950] transition">
+                    <div class="text-3xl">📡</div>
+                    <div>
+                        <h3 class="font-bold text-gray-200">1. RECON (OSINT)</h3>
+                        <p class="text-xs text-gray-500">Gather Intel: Name, Pet, Year</p>
+                    </div>
+                </div>
+                <div onclick="nav('tools')" class="bg-[#161b22] p-4 rounded border border-[#30363d] flex items-center gap-4 cursor-pointer hover:border-[#3fb950] transition">
+                    <div class="text-3xl">💻</div>
+                    <div>
+                        <h3 class="font-bold text-gray-200">2. TERMINAL (C2)</h3>
+                        <p class="text-xs text-gray-500">Generate Wordlist & Attack</p>
+                    </div>
+                </div>
+                <div onclick="nav('store')" class="bg-[#161b22] p-4 rounded border border-[#30363d] flex items-center gap-4 cursor-pointer hover:border-[#3fb950] transition">
+                    <div class="text-3xl">🏢</div>
+                    <div>
+                        <h3 class="font-bold text-gray-200">3. TARGET PORTAL</h3>
+                        <p class="text-xs text-gray-500">CyberCorp Intranet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-gram" class="app-view bg-[#0d1117]">
+        <header class="p-4 border-b border-[#30363d] bg-[#161b22] sticky top-0 z-10 flex items-center gap-3">
+            <div class="w-10 h-10 rounded bg-blue-600 flex items-center justify-center text-white font-bold">in</div>
+            <div>
+                <h3 class="font-bold text-sm">Jonathan (CFO)</h3>
+                <p class="text-[10px] text-gray-400">Chief Financial Officer @ CyberCorp</p>
+            </div>
+        </header>
+        
+        <div class="p-4">
+            <p class="text-xs text-gray-500 mb-2 font-mono"> > SCROLLING TARGET ACTIVITY LOG...</p>
+            <div class="intel-grid">
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/office.png', 'Celebrating 40 years of life! Hard at work in the office. (Born: 1986)')">
+                    <img src="https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/office.png" alt="Office">
+                    <div class="intel-overlay">DATA: BIRTH_YEAR</div>
+                </div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/dog.png', 'My best friend Simba came to visit me at work today! 🐕')">
+                    <img src="https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/dog.png" alt="Pet">
+                    <div class="intel-overlay">DATA: PET_NAME</div>
+                </div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/card.png', 'Late night expenses. DigiBank is the best partner for CyberCorp.')">
+                    <img src="https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/card.png" alt="Bank">
+                    <div class="intel-overlay">DATA: FINANCIAL</div>
+                </div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/intranet.png', 'Our secure internal portal. No one gets in without a pass.')">
+                    <img src="https://noon-course-s3-bucket.s3.us-east-1.amazonaws.com/img/intranet.png" alt="Portal">
+                    <div class="intel-overlay">DATA: TARGET_URL</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-tools" class="app-view bg-black text-[#3fb950] font-mono text-sm">
+        <header class="p-3 border-b border-[#30363d] bg-[#161b22] flex justify-between items-center sticky top-0 z-10">
+            <span class="font-bold">root@c2-server:~#</span>
+            <div class="flex gap-2 text-xs">
+                <button onclick="switchTool('gen')" class="hover:text-white underline">1_WORDLIST</button>
+                <button onclick="switchTool('attack')" class="hover:text-white underline">2_HYDRA</button>
+            </div>
+        </header>
+
+        <div id="tool-gen" class="p-4">
+            <div class="mb-4 text-gray-500 text-xs border-l-2 border-yellow-500 pl-2">
+                ⚠ WARNING: Garbage In, Garbage Out.<br>
+                If you enter wrong Intel, the generated wordlist will be useless.
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-blue-400 block mb-1">TARGET_FIRSTNAME (Exact)</label>
+                    <input type="text" id="input-name" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white focus:border-[#3fb950] outline-none rounded-none" placeholder="e.g. Ryan">
+                </div>
+                <div>
+                    <label class="text-xs text-blue-400 block mb-1">BIRTH_YEAR (YYYY)</label>
+                    <input type="number" id="input-year" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white focus:border-[#3fb950] outline-none rounded-none" placeholder="e.g. 1990">
+                </div>
+                <div>
+                    <label class="text-xs text-blue-400 block mb-1">PET_NAME (Case Sensitive)</label>
+                    <input type="text" id="input-pet" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white focus:border-[#3fb950] outline-none rounded-none" placeholder="e.g. Fluffy">
+                </div>
+            </div>
+
+            <button onclick="generateWordlist()" class="w-full mt-6 border border-[#3fb950] text-[#3fb950] py-2 hover:bg-[#3fb950] hover:text-black transition uppercase font-bold">
+                > EXECUTE_SCRIPT.PY
+            </button>
+
+            <div id="wordlist-output" class="hidden mt-4 p-2 bg-[#0d1117] border-l-2 border-[#3fb950] text-xs h-32 overflow-y-auto"></div>
+        </div>
+
+        <div id="tool-attack" class="hidden p-4">
+            <div class="mb-4">
+                <label class="text-xs text-red-500 block mb-2">SELECT_VECTOR:</label>
+                <select id="target-select" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none">
+                    <option value="store">10.0.0.8 (CyberCorp Intranet)</option>
+                    <option value="bank">192.168.1.50 (DigiBank API)</option>
+                </select>
+            </div>
+
+            <div class="border border-gray-700 p-2 mb-4 text-xs text-gray-400">
+                LOADED: <span id="wordlist-status" class="text-yellow-500">None</span><br>
+                THREADS: 4<br>
+                METHOD: HTTP-POST-FORM
+            </div>
+
+            <button onclick="startBruteForce()" class="w-full border border-red-500 text-red-500 py-2 hover:bg-red-600 hover:text-white transition uppercase font-bold animate-pulse">
+                > LAUNCH_ATTACK
+            </button>
+
+            <div id="console-log" class="mt-4 p-2 bg-black font-mono text-xs h-48 overflow-y-auto hidden border-t border-gray-800"></div>
+        </div>
+    </div>
+
+    <div id="view-store" class="app-view bg-[#f0f2f5] text-gray-800">
+        <div id="store-login" class="h-full flex flex-col items-center justify-center p-8 bg-[#003366]">
+            <div class="bg-white p-8 rounded shadow-lg w-full max-w-sm text-center">
+                <h1 class="text-2xl font-bold text-[#003366] mb-1">CyberCorp</h1>
+                <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">Intranet Portal</p>
+                <div class="bg-red-50 border border-red-200 p-3 rounded mb-4">
+                    <span class="block text-2xl mb-1">🔒</span>
+                    <p class="text-xs text-red-700 font-bold">ACCESS RESTRICTED</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="store-dashboard" class="hidden h-full bg-gray-100">
+            <header class="bg-[#003366] text-white p-4 flex justify-between items-center shadow-md">
+                <div>
+                    <h2 class="font-bold text-sm">CyberCorp Intranet</h2>
+                    <p class="text-[10px] text-blue-200">Welcome, Jonathan (CFO)</p>
+                </div>
+                <div class="bg-red-600 text-xs px-2 py-1 rounded font-bold">ADMIN</div>
+            </header>
+            
+            <div class="p-4">
+                <div class="bg-white border-l-4 border-red-500 p-4 shadow-sm mb-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-red-600 text-sm">SECURITY AUDIT: FAILED</h3>
+                            <p class="text-xs text-gray-600 mt-1">Multi-Factor Authentication (MFA) is DISABLED.</p>
+                        </div>
+                        <button onclick="showSettings()" class="bg-gray-800 text-white text-xs px-3 py-2 rounded hover:bg-black">
+                            FIX NOW
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-xs text-gray-500 mb-2 uppercase tracking-wide">Confidential Files</h3>
+                
+                <div class="bg-white p-3 rounded shadow-sm border border-gray-200 mb-2 flex items-center gap-3 cursor-pointer hover:bg-blue-50 transition" onclick="openPdf()">
+                    <div class="text-2xl">📄</div>
+                    <div>
+                        <p class="text-sm font-bold text-[#003366]">Q4_Financial_Report.pdf</p>
+                        <p class="text-[10px] text-gray-400">Confidential • 2.4 MB</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 rounded shadow-sm border border-gray-200 mb-2 flex items-center gap-3">
+                    <div class="text-2xl">💳</div>
+                    <div>
+                        <p class="text-sm font-bold text-[#003366]">Corporate_Credit_Card</p>
+                        <p class="text-[10px] text-gray-400">DigiBank • Ending 4492</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-settings" class="hidden fixed inset-0 z-50 bg-gray-900/50 backdrop-blur flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-lg shadow-2xl overflow-hidden">
+                <header class="bg-gray-100 p-3 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-gray-700 text-sm">Account Security</h3>
+                    <button onclick="hideSettings()" class="text-gray-400 hover:text-black">✕</button>
+                </header>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-600 mb-2">1. NEW PASSWORD</label>
+                        <input type="text" id="new-pass" class="w-full border border-gray-300 p-2 rounded text-sm focus:border-blue-500 outline-none" placeholder="Enter passphrase...">
+                        <p class="text-[10px] text-gray-400 mt-1">Must be complex (e.g. "Simba_Eats_Steak_In_Office")</p>
+                    </div>
+
+                    <div class="mb-6 flex justify-between items-center bg-blue-50 p-3 rounded border border-blue-100">
+                        <div>
+                            <span class="block text-xs font-bold text-[#003366]">2. MFA (Token)</span>
+                            <span class="text-[10px] text-gray-500" id="2fa-status-text">Status: DISABLED</span>
+                        </div>
+                        <button id="btn-2fa" onclick="toggle2FA()" class="w-10 h-6 bg-gray-300 rounded-full relative transition-all">
+                            <div id="toggle-circle" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-all shadow-sm"></div>
+                        </button>
+                    </div>
+
+                    <button onclick="saveDefenses()" class="w-full bg-[#003366] text-white py-3 rounded font-bold text-sm hover:bg-blue-900 transition">
+                        UPDATE SECURITY POLICY
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl h-[80vh] rounded shadow-2xl flex flex-col relative">
+            <div class="bg-gray-700 text-white p-3 flex justify-between items-center rounded-t">
+                <span class="text-xs font-mono">CONFIDENTIAL_SALARY_REPORT_Q4.pdf</span>
+                <button onclick="document.getElementById('pdf-modal').classList.add('hidden')" class="text-red-400 hover:text-white font-bold px-2">CLOSE ✕</button>
+            </div>
+            <div class="flex-1 p-8 overflow-y-auto bg-gray-100 font-serif text-black">
+                <div class="border-2 border-red-500 border-double p-6 bg-white shadow-sm relative">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                        <span class="text-6xl font-bold -rotate-45 text-red-900">TOP SECRET</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-center mb-6 underline">EXECUTIVE PAYROLL</h1>
+                    <table class="w-full border-collapse border border-gray-400 mb-6 text-sm">
+                        <tr class="bg-gray-200">
+                            <th class="border border-gray-400 p-2">Employee</th>
+                            <th class="border border-gray-400 p-2">Role</th>
+                            <th class="border border-gray-400 p-2">Salary</th>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-400 p-2">Jonathan</td>
+                            <td class="border border-gray-400 p-2">CFO</td>
+                            <td class="border border-gray-400 p-2 text-green-700 font-bold">$450,000</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 bg-[#161b22] border-t border-[#30363d] px-6 py-2 flex justify-between z-50">
+        <button onclick="nav('home')" class="nav-btn flex flex-col items-center text-gray-500 hover:text-white w-full">
+            <span class="text-xl mb-1">🏠</span>
+            <span class="text-[9px] font-mono">HOME</span>
         </button>
-        <button onclick="nav('gram')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
-            <span class="text-2xl mb-1">📸</span>
-            <span class="text-[10px]">GramZone</span>
+        <button onclick="nav('gram')" class="nav-btn flex flex-col items-center text-gray-500 hover:text-white w-full">
+            <span class="text-xl mb-1">📡</span>
+            <span class="text-[9px] font-mono">RECON</span>
         </button>
-        <button onclick="nav('tools')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
-            <span class="text-2xl mb-1">🛠️</span>
-            <span class="text-[10px]">HackerOps</span>
+        <button onclick="nav('tools')" class="nav-btn flex flex-col items-center text-gray-500 hover:text-[#3fb950] w-full">
+            <span class="text-xl mb-1">💻</span>
+            <span class="text-[9px] font-mono">C2_TERM</span>
         </button>
-        <button onclick="nav('store')" class="nav-btn flex flex-col items-center text-gray-400 w-full active:scale-95 transition">
-            <span class="text-2xl mb-1">🎮</span>
-            <span class="text-[10px]">Store</span>
+        <button onclick="nav('store')" class="nav-btn flex flex-col items-center text-gray-500 hover:text-blue-400 w-full">
+            <span class="text-xl mb-1">🏢</span>
+            <span class="text-[9px] font-mono">TARGET</span>
         </button>
     </nav>
 
     <script>
-        // --- State Management ---
-        let gameState = JSON.parse(localStorage.getItem('cybersim_ryan_v2')) || {
-            password: "Luna2010",
+        // --- Game State ---
+        let gameState = JSON.parse(localStorage.getItem('redteam_mission_v3')) || {
+            password: "Simba1986", // Correct Password
             is2FA: false,
             hackedStore: false
         };
 
+        // This variable stores the Generated Wordlist
+        let generatedWordlist = [];
+
         function saveState() {
-            localStorage.setItem('cybersim_ryan_v2', JSON.stringify(gameState));
+            localStorage.setItem('redteam_mission_v3', JSON.stringify(gameState));
         }
 
         // --- Navigation ---
         function nav(viewId) {
             document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active-view'));
-            const target = document.getElementById(`view-${viewId}`);
-            if(target) target.classList.add('active-view');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-white'));
+            document.getElementById(`view-${viewId}`).classList.add('active-view');
             
             if (viewId === 'store') {
                 if (gameState.hackedStore) {
@@ -284,7 +357,7 @@
             }
         }
 
-        // --- Modals Logic ---
+        // --- Modals ---
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
         function openPost(imgSrc, caption) {
@@ -293,7 +366,11 @@
             document.getElementById('post-viewer').style.display = 'flex';
         }
 
-        // --- HackerOps Logic ---
+        function openPdf() {
+            document.getElementById('pdf-modal').classList.remove('hidden');
+        }
+
+        // --- Logic: Wordlist Generation (Challenge Added) ---
         function switchTool(tool) {
             document.getElementById('tool-gen').classList.add('hidden');
             document.getElementById('tool-attack').classList.add('hidden');
@@ -301,66 +378,122 @@
         }
 
         function generateWordlist() {
+            // 1. Get User Input
+            let nameInput = document.getElementById('input-name').value.trim();
+            let yearInput = document.getElementById('input-year').value.trim();
+            let petInput = document.getElementById('input-pet').value.trim();
+
             const output = document.getElementById('wordlist-output');
             output.classList.remove('hidden');
-            output.innerHTML = "<span class='text-green-400 animate-pulse'>[+] Connecting to AI Engine...</span>";
-            
+            output.innerHTML = "<span class='blink'>[+] VALIDATING INTEL & GENERATING...</span>";
+
+            // 2. Validate Inputs (Challenge Logic)
+            let isCorrect = (nameInput.toLowerCase() === "jonathan" && petInput === "Simba" && yearInput === "1986");
+
             setTimeout(() => {
-                output.innerHTML = `
-                    <span class='text-gray-400'># Generated Payload:</span><br>
-                    Ryan_2010<br>
-                    Luna_Love<br>
-                    RyanGamer123<br>
-                    Hilal_Ryan<br>
-                    <span class='text-green-300 font-bold'>Luna2010</span><br>
-                    Ryan_King<br>
-                    ILoveLuna
-                `;
-            }, 1500);
+                if (isCorrect) {
+                    // Success: Generate Good Wordlist containing real password
+                    generatedWordlist = [
+                        "Jonathan_1986", "Simba1986", "Admin1234", "Cyber_Simba", "Jonathan123", "Simba_Office"
+                    ];
+                    output.innerHTML = `
+                        <span class='text-[#3fb950]'>[SUCCESS] INTEL VERIFIED.</span><br>
+                        <span class='text-gray-500'># wordlist_v3.txt generated:</span><br>
+                        Jonathan_1986<br>
+                        <span class='text-[#3fb950] font-bold'>Simba1986</span><br>
+                        Admin1234... (and 3 others)
+                    `;
+                    document.getElementById('wordlist-status').innerText = "Valid (High Quality)";
+                    document.getElementById('wordlist-status').className = "text-[#3fb950]";
+                } else {
+                    // Failure: Generate Garbage Wordlist (Poisoned)
+                    generatedWordlist = [
+                        nameInput + "_123", 
+                        petInput + "99", 
+                        nameInput + yearInput,
+                        "Admin1234", 
+                        "Password123"
+                    ];
+                    output.innerHTML = `
+                        <span class='text-red-500'>[WARNING] INTEL LOW QUALITY.</span><br>
+                        <span class='text-gray-500'># wordlist_bad.txt generated based on inputs:</span><br>
+                        ${nameInput}_123<br>
+                        ${petInput}99<br>
+                        ${nameInput}${yearInput}<br>
+                        Admin1234...
+                    `;
+                    document.getElementById('wordlist-status').innerText = "Corrupted (Bad Intel)";
+                    document.getElementById('wordlist-status').className = "text-red-500";
+                }
+            }, 1000);
         }
 
+        // --- Logic: Attack (Defense Fix) ---
         function startBruteForce() {
             const target = document.getElementById('target-select').value;
             const consoleLog = document.getElementById('console-log');
             consoleLog.classList.remove('hidden');
-            consoleLog.innerHTML = `<span class='text-blue-400'>[*] Initializing Attack on ${target.toUpperCase()}...</span><br>`;
+            consoleLog.innerHTML = `<span class='text-blue-400'>[*] INITIALIZING HYDRA ON ${target.toUpperCase()}...</span><br>`;
             
-            let attempts = ["Ryan123", "Luna_Love", "Hilal2024", gameState.password]; 
+            // CHALLENGE: Only use the generated wordlist!
+            // If generatedWordlist is empty or bad, it won't find the password.
+            if (generatedWordlist.length === 0) {
+                consoleLog.innerHTML += `<span class='text-red-500'>[!] ERROR: No wordlist loaded. Go to step 1.</span>`;
+                return;
+            }
+
             let i = 0;
+            let found = false;
 
             const interval = setInterval(() => {
-                if (i >= attempts.length) { clearInterval(interval); return; }
-                let pass = attempts[i];
+                // End of list
+                if (i >= generatedWordlist.length) { 
+                    clearInterval(interval); 
+                    if (!found) {
+                        // Failed to find password (Defense Successful OR Bad Intel)
+                        consoleLog.innerHTML += `<span class='text-red-500 font-bold'>[-] ATTACK FINISHED. PASSWORD NOT FOUND.</span><br>`;
+                        if (gameState.password !== "Simba1986") {
+                            alert("🛡️ DEFENSE SUCCESSFUL!\nThe attacker's wordlist does not contain your new strong password.");
+                        } else {
+                            alert("❌ ATTACK FAILED.\nReason: Your Wordlist is bad. You entered wrong info in the Recon phase.");
+                        }
+                    }
+                    return; 
+                }
+
+                let pass = generatedWordlist[i];
+                // Check if this guess matches the ACTUAL current password
                 let isMatch = (pass === gameState.password);
 
+                let logLine = `POST /login user=Jonathan pass=${pass}`;
+
                 if (!isMatch) {
-                    consoleLog.innerHTML += `<span class='text-red-500'>[x] Trying: ${pass} ... FAILED</span><br>`;
+                    consoleLog.innerHTML += `<span class='text-red-500'>[401] ${logLine} ... REJECTED</span><br>`;
                     consoleLog.scrollTop = consoleLog.scrollHeight;
                 } else {
+                    // Password Found!
+                    found = true;
                     clearInterval(interval);
-                    consoleLog.innerHTML += `<span class='text-green-400 font-bold'>[v] Trying: ${pass} ... MATCH FOUND!</span><br>`;
+                    consoleLog.innerHTML += `<span class='text-[#3fb950] font-bold'>[200] ${logLine} ... SUCCESS!</span><br>`;
                     
                     setTimeout(() => {
                         if (target === 'bank') {
-                            consoleLog.innerHTML += `<span class='text-yellow-400'>[*] Sending Login Request...</span><br>`;
-                            setTimeout(() => {
-                                consoleLog.innerHTML += `<span class='text-red-500 bg-red-900/50 p-2 block mt-2 border border-red-500 rounded'>⛔ ACCESS DENIED: 2FA REQUIRED.</span>`;
-                                consoleLog.scrollTop = consoleLog.scrollHeight;
-                                alert("🛑 البنك محمي!\nكلمة المرور صحيحة، لكن الحماية الثنائية منعتك.\nجرب المتجر!");
-                            }, 800);
+                            consoleLog.innerHTML += `<span class='text-red-500'>[!] 403 FORBIDDEN: MFA TOKEN REQUIRED.</span>`;
+                            consoleLog.scrollTop = consoleLog.scrollHeight;
+                            alert("🛑 ACCESS DENIED.\nTarget has Hardened Security (2FA).\nPivot to Intranet Portal.");
                         } else {
-                            consoleLog.innerHTML += `<span class='text-yellow-400'>[*] Sending Login Request...</span><br>`;
+                            consoleLog.innerHTML += `<span class='text-yellow-500'>[*] ESTABLISHING SESSION...</span><br>`;
                             setTimeout(() => {
                                 if (gameState.is2FA) {
-                                    consoleLog.innerHTML += `<span class='text-blue-400 bg-blue-900/50 p-2 block mt-2 border border-blue-500 rounded'>🛡️ ATTACK BLOCKED BY 2FA.</span>`;
-                                    alert("🎉 كفو!\nالدفاع نجح. لقد أمنت الحساب.");
+                                    consoleLog.innerHTML += `<span class='text-blue-400'>[!] CONNECTION REFUSED BY SERVER (MFA ACTIVE).</span>`;
+                                    alert("⚠️ PARTIAL SUCCESS.\nFound password, but MFA blocked access.\nTip: Keep MFA enabled.");
                                 } else {
-                                    consoleLog.innerHTML += `<span class='text-green-400 bg-green-900/50 p-2 block mt-2 border border-green-500 rounded'>🔓 ACCESS GRANTED!</span>`;
+                                    consoleLog.innerHTML += `<span class='text-[#3fb950]'>[+] SHELL ESTABLISHED.</span>`;
                                     gameState.hackedStore = true;
                                     saveState();
                                     setTimeout(() => {
                                         nav('store');
-                                        alert("🔓 تم الاختراق!\nأنت الآن داخل المتجر.\nأسرع للإعدادات وأغلق الثغرة!");
+                                        alert("🔓 SYSTEM COMPROMISED.\nTask: Patch the vulnerability (Enable MFA).");
                                     }, 1000);
                                 }
                                 consoleLog.scrollTop = consoleLog.scrollHeight;
@@ -369,28 +502,30 @@
                     }, 500);
                 }
                 i++;
-            }, 600);
+            }, 400);
         }
 
-        // --- Settings Logic ---
+        // --- Settings (Defense) ---
         function showSettings() { document.getElementById('store-settings').classList.remove('hidden'); }
         function hideSettings() { document.getElementById('store-settings').classList.add('hidden'); }
         
         function toggle2FA() {
             const btn = document.getElementById('toggle-circle');
             const txt = document.getElementById('2fa-status-text');
-            if (btn.classList.contains('translate-x-6')) {
-                btn.classList.remove('translate-x-6');
-                btn.parentElement.classList.remove('bg-green-500');
-                btn.parentElement.classList.add('bg-gray-600');
-                txt.innerText = "الحالة: معطل ❌";
+            if (btn.classList.contains('translate-x-4')) {
+                btn.classList.remove('translate-x-4');
+                btn.parentElement.classList.remove('bg-blue-600');
+                btn.parentElement.classList.add('bg-gray-300');
+                txt.innerText = "Status: DISABLED";
                 txt.dataset.status = "false";
+                txt.classList.remove('text-green-600');
             } else {
-                btn.classList.add('translate-x-6');
-                btn.parentElement.classList.remove('bg-gray-600');
-                btn.parentElement.classList.add('bg-green-500');
-                txt.innerText = "الحالة: مفعل ✅";
+                btn.classList.add('translate-x-4');
+                btn.parentElement.classList.remove('bg-gray-300');
+                btn.parentElement.classList.add('bg-blue-600');
+                txt.innerText = "Status: ACTIVE";
                 txt.dataset.status = "true";
+                txt.classList.add('text-green-600');
             }
         }
 
@@ -398,24 +533,23 @@
             const newPass = document.getElementById('new-pass').value;
             const is2FAActive = document.getElementById('2fa-status-text').dataset.status === "true";
 
-            if (newPass.length < 8) {
-                alert("⚠️ كلمة المرور قصيرة! اختر جملة أطول.");
+            if (newPass.length < 5) {
+                alert("⚠️ WEAK PASSWORD DETECTED.");
                 return;
             }
-
             if (!is2FAActive) {
-                alert("⚠️ لم تفعل 2FA بعد! الحساب لا يزال في خطر.");
+                alert("⚠️ MFA MUST BE ENABLED.");
                 return;
             }
 
-            gameState.password = newPass;
+            gameState.password = newPass; // Update Password
             gameState.is2FA = true;
-            gameState.hackedStore = false;
+            gameState.hackedStore = false; // Kick hacker out
             saveState();
 
             hideSettings();
             nav('tools');
-            alert("✅ تم الحفظ!\nعد الآن إلى HackerOps وحاول اختراق المتجر للتأكد.");
+            alert("✅ PATCH APPLIED.\nNow, go back to Terminal and launch the attack again.\nIt SHOULD FAIL (Red Lines) if your new password is strong.");
         }
     </script>
 </body>
