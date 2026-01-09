@@ -7,23 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* تنسيقات الخطوط العربية والتقنية */
         body { font-family: 'Cairo', sans-serif; background-color: #0d1117; color: #c9d1d9; }
-        .mono { font-family: 'Fira Code', monospace; direction: ltr; display: inline-block; } /* للأكواد والأرقام */
-        
+        .mono { font-family: 'Fira Code', monospace; direction: ltr; display: inline-block; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #0d1117; }
         ::-webkit-scrollbar-thumb { background: #3fb950; }
-        
         .app-view { display: none; height: 100vh; padding-bottom: 80px; overflow-y: auto; }
         .active-view { display: block; }
-        
         .intel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         .intel-item { border: 1px solid #30363d; border-radius: 6px; overflow: hidden; position: relative; cursor: crosshair; }
         .intel-item img { width: 100%; height: 150px; object-fit: cover; opacity: 0.7; transition: 0.3s; }
         .intel-item:hover img { opacity: 1; transform: scale(1.05); }
         .intel-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 5px; font-size: 10px; color: #3fb950; text-align: center; }
-        
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
     </style>
@@ -41,12 +36,11 @@
                 <div class="mb-4 text-gray-300 leading-relaxed border-r-4 border-red-600 pr-4">
                     <span class="text-red-500 font-bold text-lg">⚠️ ملف سري للغاية</span><br>
                     <span class="text-white font-bold">المهمة:</span> اختبار اختراق المدير المالي <b class="mono">Jonathan</b>.<br><br>
-                    
-                    <b>المطلوب منك أيها العميل:</b><br>
-                    1. <span class="text-[#3fb950] font-bold">جمع المعلومات (Recon):</span> ابحث بدقة عن اسمه، حيوانه الأليف، وسنة ميلاده.<br>
-                    2. <span class="text-[#3fb950] font-bold">الهجوم (Weaponize):</span> استخدم المعلومات لتوليد قائمة كلمات مرور واختراق حسابه.<br>
-                    3. <span class="text-[#3fb950] font-bold">التأمين (Secure):</span> أصلح الثغرة بتفعيل المصادقة الثنائية وتغيير كلمة المرور.<br>
-                    4. <span class="text-yellow-400 font-bold">التحدي النهائي (The Flag):</span> البحث في السجلات وكشف المخترق الحقيقي.
+                    <b>المطلوب منك:</b><br>
+                    1. <span class="text-[#3fb950] font-bold">جمع المعلومات:</span> ابحث عن اسمه، حيوانه الأليف (simba)، وسنة ميلاده.<br>
+                    2. <span class="text-[#3fb950] font-bold">الهجوم:</span> ولد قائمة تخمين واخترق حسابه.<br>
+                    3. <span class="text-[#3fb950] font-bold">التأمين:</span> أصلح الثغرة بتفعيل المصادقة الثنائية.<br>
+                    4. <span class="text-yellow-400 font-bold">التحدي النهائي:</span> البحث في السجلات وكشف المخترق.
                 </div>
                 <button onclick="closeModal('mission-modal')" class="w-full bg-[#238636] hover:bg-[#2ea043] text-white py-3 rounded border border-[rgba(255,255,255,0.1)] transition font-bold mt-4 shadow-lg">
                     [ قبول المهمة وبدء التشغيل ]
@@ -73,11 +67,10 @@
         <div class="p-6 pt-10">
             <h1 class="text-2xl font-bold text-gray-100 mb-1">لوحة تحكم <span class="text-[#3fb950]">الفريق الأحمر</span></h1>
             <p class="text-xs text-gray-500 mb-8">رقم الجلسة: <span id="display-session-id" class="text-blue-400 font-bold blink mono">LOADING...</span></p>
-            
             <div class="grid grid-cols-1 gap-4">
                 <div onclick="nav('gram')" class="bg-[#161b22] p-4 rounded border border-[#30363d] flex items-center gap-4 cursor-pointer hover:border-[#3fb950] transition">
                     <div class="text-3xl">📡</div>
-                    <div><h3 class="font-bold text-gray-200">1. الاستطلاع (RECON)</h3><p class="text-xs text-gray-500">جمع المعلومات: الاسم، الحيوان، السنة</p></div>
+                    <div><h3 class="font-bold text-gray-200">1. الاستطلاع (RECON)</h3><p class="text-xs text-gray-500">جمع المعلومات</p></div>
                 </div>
                 <div onclick="nav('tools')" class="bg-[#161b22] p-4 rounded border border-[#30363d] flex items-center gap-4 cursor-pointer hover:border-[#3fb950] transition">
                     <div class="text-3xl">💻</div>
@@ -99,10 +92,10 @@
         <div class="p-4">
             <p class="text-xs text-gray-500 mb-2 mono text-left" dir="ltr"> > FETCHING TARGET ACTIVITY LOG...</p>
             <div class="intel-grid">
-                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/office.png', 'احتفل بعيد ميلادي الـ 40 في المكتب! العمل الجاد لا يتوقف. (مواليد: 1986)')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/office.png" alt="Office"><div class="intel-overlay">دليل: سنة الميلاد</div></div>
-                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/dog.png', 'صديقي المفضل Simba جاء لزيارتي في العمل! 🐕')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/dog.png" alt="Pet"><div class="intel-overlay">دليل: اسم الحيوان</div></div>
-                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/card.png', 'مصاريف العمل في وقت متأخر. بنك DigiBank هو الأفضل.')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/card.png" alt="Bank"><div class="intel-overlay">دليل: البنك</div></div>
-                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/intranet.png', 'بوابة الشركة الداخلية الآمنة. ممنوع الدخول لغير المصرح لهم.')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/intranet.png" alt="Portal"><div class="intel-overlay">دليل: الهدف</div></div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/office.png', 'احتفلت بعيد ميلادي الـ 40 في المكتب! ')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/office.png" alt="Office"><div class="intel-overlay">دليل: سنة الميلاد</div></div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/dog.png', 'صديقي المفضل simba زارني في العمل! 🐕')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/dog.png" alt="Pet"><div class="intel-overlay">دليل: اسم الحيوان</div></div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/card.png', 'العمل لا يقتل مهما كان شاقاً وقاسياً.. ولكن الفراغ يقتل أنبل ما في الإنسان.')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/card.png" alt="Bank"><div class="intel-overlay">دليل: البنك</div></div>
+                <div class="intel-item" onclick="openPost('https://noon-course-s3-bucket.s3.amazonaws.com/img/intranet.png', 'عدنا والعود أحمد')"><img src="https://noon-course-s3-bucket.s3.amazonaws.com/img/intranet.png" alt="Portal"><div class="intel-overlay">دليل: الهدف</div></div>
             </div>
         </div>
     </div>
@@ -118,17 +111,17 @@
         
         <div id="tool-gen" class="p-4">
             <div class="mb-4 text-gray-500 text-xs border-r-2 border-yellow-500 pr-2">
-                ⚠ <b>تحذير:</b> إذا أدخلت معلومات خاطئة، ستكون قائمة كلمات المرور خاطئة ولن ينجح الهجوم. كن دقيقاً!
+                ⚠ <b>تحذير:</b> إذا أدخلت معلومات خاطئة، ستكون القائمة خاطئة ولن ينجح الهجوم.
             </div>
             <div class="space-y-3">
-                <div><label class="text-xs text-blue-400 block mb-1">الاسم الأول للهدف (بالإنجليزية)</label><input type="text" id="input-name" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. Ryan"></div>
-                <div><label class="text-xs text-blue-400 block mb-1">سنة الميلاد (أرقام)</label><input type="number" id="input-year" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. 1990"></div>
-                <div><label class="text-xs text-blue-400 block mb-1">اسم الحيوان الأليف (بالإنجليزية)</label><input type="text" id="input-pet" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. Fluffy"></div>
+                <div><label class="text-xs text-blue-400 block mb-1">الاسم الأول للهدف (بالإنجليزية)</label><input type="text" id="input-name" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. Jonathan"></div>
+                <div><label class="text-xs text-blue-400 block mb-1">سنة الميلاد (أرقام)</label><input type="number" id="input-year" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. 1986"></div>
+                <div><label class="text-xs text-blue-400 block mb-1">اسم الحيوان الأليف (simba)</label><input type="text" id="input-pet" class="w-full bg-[#0d1117] border border-[#30363d] p-2 text-white outline-none mono" placeholder="e.g. simba"></div>
             </div>
             <button onclick="generateWordlist()" class="w-full mt-6 border border-[#3fb950] text-[#3fb950] py-2 hover:bg-[#3fb950] hover:text-black transition font-bold shadow shadow-green-900/50">
                 تشغيل سكربت التوليد (Generate)
             </button>
-            <div id="wordlist-output" class="hidden mt-4 p-2 bg-[#0d1117] border-r-2 border-[#3fb950] text-xs h-32 overflow-y-auto mono text-left" dir="ltr"></div>
+            <div id="wordlist-output" class="hidden mt-4 p-2 bg-[#0d1117] border-r-2 border-[#3fb950] text-xs h-40 overflow-y-auto mono text-left" dir="ltr"></div>
         </div>
 
         <div id="tool-attack" class="hidden p-4">
@@ -142,12 +135,10 @@
     </div>
 
     <div id="view-store" class="app-view bg-[#f0f2f5] text-gray-800">
-        
         <div id="store-login" class="h-full flex flex-col items-center justify-center p-8 bg-[#003366]">
             <div class="bg-white p-8 rounded shadow-lg w-full max-w-sm text-center">
                 <h1 class="text-2xl font-bold text-[#003366] mb-1">CyberCorp</h1>
                 <p class="text-xs text-gray-500 mb-6 tracking-widest uppercase">بوابة الموظفين</p>
-                
                 <div id="login-form-container">
                     <input type="password" id="legit-password" placeholder="كلمة المرور..." class="w-full border border-gray-300 p-3 rounded mb-3 text-sm outline-none focus:border-blue-500 text-center">
                     <button onclick="attemptLegitLogin()" class="w-full bg-[#003366] text-white py-2 rounded font-bold text-sm hover:bg-blue-800 transition">تسجيل الدخول</button>
@@ -197,17 +188,13 @@
                             قام المخترق بترك باب خلفي (Backdoor).<br>
                             ابحث في السجلات أدناه عن عنوان <b>IP</b> الذي قام بطلب ملف <span class="text-white">backdoor.php</span> وكانت النتيجة ناجحة <span class="text-white">(200)</span>.
                         </p>
-                        
-                        <div id="log-container" class="bg-[#0d1117] h-48 overflow-y-scroll text-[9px] text-gray-500 p-2 mb-4 font-mono border border-gray-700 leading-tight whitespace-nowrap">
-                            </div>
-
+                        <div id="log-container" class="bg-[#0d1117] h-48 overflow-y-scroll text-[9px] text-gray-500 p-2 mb-4 font-mono border border-gray-700 leading-tight whitespace-nowrap"></div>
                         <div class="flex gap-2" dir="rtl">
                             <input type="text" id="flag-input" placeholder="اكتب الـ IP المشبوه هنا..." class="w-full bg-[#0d1117] border border-gray-600 p-2 text-white text-xs outline-none focus:border-[#3fb950] text-center">
                         </div>
                         <button onclick="submitFlag()" class="w-full mt-2 bg-[#3fb950] text-black font-bold text-xs py-2 hover:bg-white transition">تحقق واستلم الجائزة 🏆</button>
                     </div>
                 </div>
-
             </div>
         </div>
         
@@ -247,14 +234,12 @@
             <div class="bg-black p-8 rounded-lg">
                 <h1 class="text-4xl mb-4">🏆</h1>
                 <h2 class="text-2xl font-bold text-white mb-2">أحسنت يا بطل!</h2>
-                
                 <div class="bg-gray-800 p-4 rounded mb-4 border border-yellow-500 text-left relative group cursor-pointer" dir="ltr" onclick="copyWinnerData()">
                     <p class="text-[10px] text-gray-500">YOUR WINNING DATA:</p>
                     <p class="text-xs text-blue-300 mono mb-1">Session: <span id="win-session-id">...</span></p>
                     <p class="text-xs text-yellow-300 mono">Flag: CTF{HACKER_DOWN_2026}</p>
                     <div class="absolute top-2 right-2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-50 group-hover:opacity-100 font-bold">نسخ البيانات</div>
                 </div>
-
                 <p class="text-xs text-gray-400 mb-4">اضغط على المربع أعلاه لنسخ الكود، ثم الصقه في النموذج.</p>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdjCDc03p5SDTy5ou7ETbjII2JDTB0Pj4h24ybB-DBNNGIQfg/viewform?usp=header" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded transition animate-pulse">
                     فتح نموذج الإجابة ➔
@@ -272,13 +257,12 @@
     </nav>
 
     <script>
-        // 1. توليد رقم الجلسة
         let sessionID = "0x" + Math.floor(Math.random()*16777215).toString(16).toUpperCase();
         document.getElementById('display-session-id').innerText = sessionID;
 
-        // 2. حالة اللعبة
-        let gameState = JSON.parse(localStorage.getItem('redteam_mission_v7')) || { 
-            password: "Simba1986", 
+        // كلمة المرور الافتراضية simba1986 (صغيرة)
+        let gameState = JSON.parse(localStorage.getItem('redteam_mission_v8')) || { 
+            password: "simba1986", 
             is2FA: false, 
             hackedStore: false, 
             loggedIn: false,
@@ -286,16 +270,13 @@
         };
         let generatedWordlist = [];
 
-        function saveState() { localStorage.setItem('redteam_mission_v7', JSON.stringify(gameState)); }
+        function saveState() { localStorage.setItem('redteam_mission_v8', JSON.stringify(gameState)); }
 
-        // 3. التنقل
         function nav(viewId) {
             document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active-view'));
             document.getElementById(`view-${viewId}`).classList.add('active-view');
-            
             if (viewId === 'store') {
                 if (gameState.hackedStore) {
-                    // تم الاختراق (وضع الهاكر)
                     document.getElementById('store-login').classList.add('hidden');
                     document.getElementById('store-dashboard').classList.remove('hidden');
                     document.getElementById('audit-alert').classList.remove('hidden');
@@ -304,23 +285,20 @@
                     document.getElementById('access-badge').innerText = "HACKED_ADMIN";
                     document.getElementById('access-badge').className = "bg-red-600 text-xs px-2 py-1 rounded font-bold mono";
                 } else if (gameState.loggedIn && gameState.is2FA) {
-                    // تم التأمين والدخول (وضع الآدمن الآمن)
                     document.getElementById('store-login').classList.add('hidden');
                     document.getElementById('store-dashboard').classList.remove('hidden');
                     document.getElementById('audit-alert').classList.add('hidden');
                     document.getElementById('audit-success').classList.remove('hidden');
-                    document.getElementById('forensics-btn-container').classList.remove('hidden'); // زر التحدي
+                    document.getElementById('forensics-btn-container').classList.remove('hidden');
                     document.getElementById('access-badge').innerText = "SECURE_ADMIN";
                     document.getElementById('access-badge').className = "bg-green-600 text-xs px-2 py-1 rounded font-bold mono";
                 } else {
-                    // شاشة تسجيل الدخول
                     document.getElementById('store-login').classList.remove('hidden');
                     document.getElementById('store-dashboard').classList.add('hidden');
                 }
             }
         }
 
-        // --- دوال مساعدة ---
         function attemptLegitLogin() {
             const inputPass = document.getElementById('legit-password').value;
             if (inputPass === gameState.password) {
@@ -336,7 +314,6 @@
         function openPost(imgSrc, caption) { document.getElementById('viewer-img').src = imgSrc; document.getElementById('viewer-caption').innerText = caption; document.getElementById('post-viewer').style.display = 'flex'; }
         function switchTool(tool) { document.getElementById('tool-gen').classList.add('hidden'); document.getElementById('tool-attack').classList.add('hidden'); document.getElementById(`tool-${tool}`).classList.remove('hidden'); }
 
-        // --- المنطق: توليد القائمة ---
         function generateWordlist() {
             let nameInput = document.getElementById('input-name').value.trim();
             let yearInput = document.getElementById('input-year').value.trim();
@@ -345,22 +322,42 @@
             output.classList.remove('hidden');
             output.innerHTML = "<span class='blink'>[+] جاري التحقق من المعلومات...</span>";
 
-            let isCorrect = (nameInput.toLowerCase() === "jonathan" && petInput === "Simba" && yearInput === "1986");
+            // التعديل: قبول simba بالحروف الصغيرة أو الكبيرة
+            let isCorrect = (nameInput.toLowerCase() === "jonathan" && petInput.toLowerCase() === "simba" && yearInput === "1986");
 
             setTimeout(() => {
                 if (isCorrect) {
-                    generatedWordlist = ["Jonathan_1986", "Simba1986", "Admin1234", "Cyber_Simba", "Jonathan123", "Simba_Office"];
-                    output.innerHTML = "<span class='text-[#3fb950]'>[تم] المعلومات صحيحة.</span><br><span class='text-gray-500'># تم إنشاء wordlist_v3.txt</span>";
+                    // التعديل: وضع كلمة المرور الصحيحة في النهاية لزيادة التشويق
+                    generatedWordlist = [
+                        "Jonathan_1986", 
+                        "Admin1234", 
+                        "Jonathan123", 
+                        "Cyber_Admin",
+                        "Simba_Office",
+                        "simba1986" // الصحيحة في الآخر
+                    ];
+                    
+                    // التعديل: عرض القائمة داخل الصندوق
+                    let listHTML = generatedWordlist.join("<br>");
+                    output.innerHTML = `
+                        <span class='text-[#3fb950]'>[تم] المعلومات صحيحة.</span><br>
+                        <span class='text-gray-500'># محتوى wordlist_v3.txt:</span><br>
+                        <div class='text-white mt-2 p-2 border border-gray-700 bg-gray-900'>${listHTML}</div>
+                    `;
                     document.getElementById('wordlist-status').innerText = "جاهزة (دقيقة)"; document.getElementById('wordlist-status').className = "text-[#3fb950] font-bold";
                 } else {
                     generatedWordlist = [nameInput+"_123", petInput+"99", "Admin1234"];
-                    output.innerHTML = "<span class='text-red-500'>[خطأ] المعلومات غير دقيقة.</span><br><span class='text-gray-500'># تم إنشاء قائمة فاسدة.</span>";
+                    let listHTML = generatedWordlist.join("<br>");
+                    output.innerHTML = `
+                        <span class='text-red-500'>[خطأ] المعلومات غير دقيقة.</span><br>
+                        <span class='text-gray-500'># محتوى القائمة :</span><br>
+                        <div class='text-red-300 mt-2 p-2 border border-red-900 bg-gray-900'>${listHTML}</div>
+                    `;
                     document.getElementById('wordlist-status').innerText = "فاسدة (بيانات خطأ)"; document.getElementById('wordlist-status').className = "text-red-500 font-bold";
                 }
             }, 1000);
         }
 
-        // --- المنطق: الهجوم ---
         function startBruteForce() {
             const target = document.getElementById('target-select').value;
             const consoleLog = document.getElementById('console-log');
@@ -375,8 +372,8 @@
                     clearInterval(interval); 
                     if (!found) {
                         consoleLog.innerHTML += `<span class='text-red-500 font-bold'>[-] FAILED. PASSWORD NOT FOUND.</span><br>`;
-                        if (gameState.password !== "Simba1986") alert("🛡️ نجح الدفاع!\nكلمة مرورك الجديدة قوية ولم يجدها المخترق في قائمته القديمة.\n\nالآن اذهب إلى بوابة الهدف وسجل الدخول.");
-                        else alert("❌ فشل الهجوم.\nالسبب: قائمة التخمين خاطئة لأنك أدخلت معلومات غير دقيقة في مرحلة الاستطلاع.");
+                        if (gameState.password !== "simba1986") alert("🛡️ نجح الدفاع!\nكلمة مرورك الجديدة قوية ولم يجدها المخترق في قائمته القديمة.\n\nالآن اذهب إلى بوابة الهدف وسجل الدخول.");
+                        else alert("❌ فشل الهجوم.\nالسبب: قائمة التخمين خاطئة.");
                     }
                     return; 
                 }
@@ -416,7 +413,6 @@
             }, 300);
         }
 
-        // --- الإعدادات والدفاع ---
         function showSettings() { document.getElementById('store-settings').classList.remove('hidden'); }
         function hideSettings() { document.getElementById('store-settings').classList.add('hidden'); }
         
@@ -433,7 +429,7 @@
         function saveDefenses() {
             const newPass = document.getElementById('new-pass').value;
             const btn = document.getElementById('toggle-circle');
-            const is2FAActive = btn.classList.contains('translate-x-4'); // Check class instead of text for simplicity
+            const is2FAActive = btn.classList.contains('translate-x-4'); 
 
             if (newPass.length < 5) { alert("⚠️ كلمة المرور ضعيفة جداً."); return; }
             if (!is2FAActive) { alert("⚠️ يجب تفعيل المصادقة الثنائية."); return; }
@@ -450,7 +446,6 @@
             alert("✅ تم تطبيق الحماية.\n\nتم إعادة تعيين النظام.\nالرجاء تسجيل الدخول بكلمة المرور *الجديدة*.");
         }
 
-        // --- التحدي النهائي (Logs Generator) ---
         function toggleChallenge() { 
             document.getElementById('challenge-section').classList.remove('hidden');
             generateLogs();
@@ -461,28 +456,19 @@
             let logs = "";
             const ips = ["192.168.1.10", "10.0.0.5", "172.16.0.23", "88.21.12.40", "45.33.22.11"];
             const paths = ["/index.html", "/login", "/dashboard", "/style.css", "/api/v1/user", "/images/logo.png"];
-            
-            // توليد 50 سطر عشوائي
             for (let i = 0; i < 50; i++) {
                 let ip = ips[Math.floor(Math.random() * ips.length)];
                 let path = paths[Math.floor(Math.random() * paths.length)];
                 let status = (Math.random() > 0.8) ? "404" : "200";
                 logs += `<span class="block">${ip} - - [10/Oct/2026:14:${10+i}] "GET ${path}" ${status}</span>`;
             }
-
-            // إدخال السطر الخبيث في مكان عشوائي (بدون لون مميز)
-            const maliciousIP = "66.6.66.6"; // The Flag Answer
+            const maliciousIP = "66.6.66.6"; 
             const maliciousLine = `<span class="block">${maliciousIP} - - [10/Oct/2026:14:44] "POST /backdoor.php" 200</span>`;
-            
-            // إضافة السطر الخبيث في المنتصف تقريباً
             logs += maliciousLine; 
-            
-            // إضافة المزيد من الضجيج
             for (let i = 0; i < 20; i++) {
                 let ip = ips[Math.floor(Math.random() * ips.length)];
                 logs += `<span class="block">${ip} - - [10/Oct/2026:14:${50+i}] "GET /favicon.ico" 200</span>`;
             }
-
             container.innerHTML = logs;
         }
 
